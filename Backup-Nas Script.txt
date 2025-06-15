@@ -1,0 +1,10 @@
+:local date [/system clock get date];
+:local time [/system clock get time];
+:local name ([/system identity get name]);
+
+:local filename ("backup_" . $name . "_" . [:pick $date 7 11] . "-" . [:pick $date 0 3] . "-" . [:pick $date 4 6] . "_" . [:pick $time 0 2] . [:pick $time 3 5]);
+
+/system backup save name=$filename;
+/tool fetch address=192.168.40.3 src-path="$filename.backup" user=Admin1234 mode=ftp password=Daniel123 dst-path="/Backups-Mikrotik/$filename.backup" upload=yes;
+
+/file remove "$filename.backup"

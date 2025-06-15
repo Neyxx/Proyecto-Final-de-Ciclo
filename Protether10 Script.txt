@@ -1,0 +1,13 @@
+:local puerto "ether10"
+:local macAutorizada "14:4F:D7:CA:EE:7D"
+:local emailDestino "danielgespinar@gmail.com"
+:local hayIntruso false
+
+:foreach i in=[/ip dhcp-server lease find interface=$puerto] do={
+    :local mac [/ip dhcp-server lease get $i mac-address]
+    :if ($mac != $macAutorizada) do={
+        :set hayIntruso true
+        :log warning message=("Intruso detectado en " . $puerto . ": MAC " . $mac)
+        /tool e-mail send to=$emailDestino subject=("ALERTA: acceso no autorizado en " . $puerto) body=("Se ha detectado un equipo NO AUTORIZADO conectado al puerto " . $puerto . " con MAC: " . $mac)
+    }
+}
